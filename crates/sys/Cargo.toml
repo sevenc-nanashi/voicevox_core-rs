@@ -1,0 +1,30 @@
+[package]
+name = "voicevox_core-sys"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["rlib"]
+
+[features]
+default = ["download", "copy-dll"]
+copy-dll = ["download"]
+download = []
+directml = []
+cuda = []
+gpu = []
+generate-bindings = ["download"]
+
+[dependencies]
+fs-err = "2.11.0"
+semver = "1.0.21"
+
+[build-dependencies]
+bindgen = "0.69.4"
+duct = "0.13.7"
+semver.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+ureq.workspace = true
+zip-extract.workspace = true
