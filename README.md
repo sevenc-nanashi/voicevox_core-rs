@@ -11,7 +11,7 @@ voicevox_core.rs は、[Voicevox Core: C API](https://voicevox.github.io/voicevo
 
 ```toml
 [dependencies]
-voicevox_core = { git = "https://github.com/sevenc-nanashi/voicevox_core-rs" }
+voicevox_core-rs = { git = "https://github.com/sevenc-nanashi/voicevox_core-rs" }
 ```
 
 ## ライセンス
