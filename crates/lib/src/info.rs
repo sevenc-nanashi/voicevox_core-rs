@@ -5,13 +5,13 @@ use voicevox_core_sys as sys;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct SupportedFeatures {
+pub struct SupportedDevices {
     cpu: bool,
     cuda: bool,
     dml: bool,
 }
 
-impl SupportedFeatures {
+impl SupportedDevices {
     /// CPUが利用可能。
     ///
     /// 常に`true`。
@@ -40,7 +40,7 @@ impl SupportedFeatures {
     }
 
     /// サポートしてる機能の一覧を取得する。
-    pub fn get() -> Result<SupportedFeatures> {
+    pub fn get() -> Result<SupportedDevices> {
         let json_ptr = unsafe {
             let mut ptr = MaybeUninit::uninit();
             i32_to_result(sys::voicevox_create_supported_devices_json(
