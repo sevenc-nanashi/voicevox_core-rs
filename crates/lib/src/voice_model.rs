@@ -32,7 +32,6 @@ impl VoiceModel {
             .to_str()
             .unwrap()
             .to_string();
-        unsafe { sys::voicevox_json_free(metas as _) };
         serde_json::from_str(&metas_json).unwrap()
     }
 
