@@ -1,6 +1,5 @@
-use std::{ffi::CString, mem::MaybeUninit, path::Path};
-
 use crate::{i32_to_result, Result};
+use std::{ffi::CString, mem::MaybeUninit, path::Path};
 use voicevox_core_sys as sys;
 
 /// テキスト解析器としてのOpen JTalk。

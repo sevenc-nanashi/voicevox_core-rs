@@ -1,13 +1,13 @@
-use indexmap::IndexMap;
+use crate::{i32_to_result, Result};
 use std::{
     collections::{BTreeMap, HashMap},
     ffi::{CStr, CString},
     mem::MaybeUninit,
 };
-
-use crate::{i32_to_result, Result};
-use serde::{Deserialize, Serialize};
 use voicevox_core_sys as sys;
+
+use indexmap::IndexMap;
+use serde::{Deserialize, Serialize};
 
 pub use uuid::Uuid;
 

@@ -1,6 +1,5 @@
 use crate::{i32_to_result, Result, SpeakerMeta};
-use std::path::Path;
-use std::{ffi::CString, mem::MaybeUninit};
+use std::{ffi::CString, mem::MaybeUninit, path::Path};
 use voicevox_core_sys as sys;
 
 /// 音声モデル。VVMファイルと対応する。
