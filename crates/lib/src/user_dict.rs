@@ -130,6 +130,15 @@ impl UserDict {
     }
 }
 
+impl Clone for UserDict {
+    fn clone(&self) -> Self {
+        let other = UserDict::new().unwrap();
+        other.import(self).unwrap();
+
+        other
+    }
+}
+
 impl Serialize for UserDict {
     fn serialize<S: serde::ser::Serializer>(
         &self,
@@ -142,18 +151,24 @@ impl Serialize for UserDict {
 }
 
 macro_rules! into_map {
-    ($t:ident) => {
+    ($t:ident, $n:ident) => {
         impl From<UserDict> for $t<Uuid, UserDictWord> {
             fn from(user_dict: UserDict) -> Self {
                 let json = user_dict.to_json().unwrap();
                 serde_json::from_str(&json).unwrap()
             }
         }
+
+        impl UserDict {
+            pub fn $n(&self) -> Result<$t<Uuid, UserDictWord>> {
+                Ok(self.clone().into())
+            }
+        }
     };
 }
-into_map!(HashMap);
-into_map!(BTreeMap);
-into_map!(IndexMap);
+into_map!(HashMap, to_hash_map);
+into_map!(BTreeMap, to_btree_map);
+into_map!(IndexMap, to_index_map);
 
 impl Drop for UserDict {
     fn drop(&mut self) {
