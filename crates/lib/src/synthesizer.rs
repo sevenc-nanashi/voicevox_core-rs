@@ -11,7 +11,7 @@ pub struct Synthesizer {
 }
 
 /// ハードウェアアクセラレーションモード。
-#[derive(Default, Debug, PartialEq, Eq)]
+#[derive(Default, Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AccelerationMode {
     /// 実行環境に合った適切なハードウェアアクセラレーションモードを選択する。
     #[default]
@@ -23,7 +23,7 @@ pub enum AccelerationMode {
 }
 
 /// [`Synthesizer::new`]のオプション。
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct InitializeOptions {
     pub acceleration_mode: AccelerationMode,
     pub cpu_num_threads: u16,
@@ -36,7 +36,7 @@ impl Default for InitializeOptions {
 }
 
 /// [`Synthesizer::synthesis`]のオプション。
-#[derive(Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct SynthesisOptions {
     pub enable_interrogative_upspeak: bool,
 }
@@ -48,7 +48,7 @@ impl Default for SynthesisOptions {
 }
 
 /// [`Synthesizer::tts`]のオプション。
-#[derive(Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct TtsOptions {
     pub enable_interrogative_upspeak: bool,
 }
@@ -181,7 +181,7 @@ impl Synthesizer {
     /// AccentPhraseの配列の音高・音素長を、特定の声で生成しなおす。
     pub fn replace_mora_data(
         &self,
-        accent_phrases: Vec<AccentPhrase>,
+        accent_phrases: &[AccentPhrase],
         style_id: StyleId,
     ) -> Result<Vec<AccentPhrase>> {
         let accent_phrases = serde_json::to_string(&accent_phrases).unwrap();
@@ -198,7 +198,7 @@ impl Synthesizer {
     /// AccentPhraseの配列の音高を、特定の声で生成しなおす。
     pub fn replace_mora_pitch(
         &self,
-        accent_phrases: Vec<AccentPhrase>,
+        accent_phrases: &[AccentPhrase],
         style_id: StyleId,
     ) -> Result<Vec<AccentPhrase>> {
         let accent_phrases = serde_json::to_string(&accent_phrases).unwrap();
@@ -215,7 +215,7 @@ impl Synthesizer {
     /// AccentPhraseの配列の音素長を、特定の声で生成しなおす。
     pub fn replace_phoneme_length(
         &self,
-        accent_phrases: Vec<AccentPhrase>,
+        accent_phrases: &[AccentPhrase],
         style_id: StyleId,
     ) -> Result<Vec<AccentPhrase>> {
         let accent_phrases = serde_json::to_string(&accent_phrases).unwrap();
