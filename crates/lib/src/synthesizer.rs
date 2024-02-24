@@ -158,10 +158,30 @@ impl Synthesizer {
         Ok(serde_json::from_str(&audio_query).unwrap())
     }
 
+    /// AquesTalk風記法からAudioQueryを生成する。
+    ///
+    /// # Arguments
+    /// * `kana` - AquesTalk風記法のカナ。
+    /// * `style_id` - 音声のスタイルID。
+    pub fn create_audio_query_from_kana(
+        &self,
+        kana: &str,
+        style_id: StyleId,
+    ) -> Result<AudioQuery> {
+        let audio_query = call_json!(
+            self.inner,
+            kana,
+            style_id,
+            voicevox_synthesizer_create_audio_query_from_kana
+        );
+
+        Ok(serde_json::from_str(&audio_query).unwrap())
+    }
+
     /// 日本語テキストからAccentPhraseの配列を生成する。
     ///
     /// # Arguments
-    /// * `text` - 音声合成するテキスト。
+    /// * `text` - 日本語テキスト。
     /// * `style_id` - 音声のスタイルID。
     pub fn create_accent_phrases(
         &self,
@@ -178,6 +198,25 @@ impl Synthesizer {
         Ok(serde_json::from_str(&accent_phrases).unwrap())
     }
 
+    /// AquesTalk風記法からAccentPhraseの配列を生成する。
+    ///
+    /// # Arguments
+    /// * `kana` - AquesTalk風記法のカナ。
+    /// * `style_id` - 音声のスタイルID。
+    pub fn create_accent_phrases_from_kana(
+        &self,
+        kana: &str,
+        style_id: StyleId,
+    ) -> Result<Vec<AccentPhrase>> {
+        let accent_phrases = call_json!(
+            self.inner,
+            kana,
+            style_id,
+            voicevox_synthesizer_create_accent_phrases_from_kana
+        );
+
+        Ok(serde_json::from_str(&accent_phrases).unwrap())
+    }
     /// AccentPhraseの配列の音高・音素長を、特定の声で生成しなおす。
     pub fn replace_mora_data(
         &self,
@@ -289,6 +328,45 @@ impl Synthesizer {
             i32_to_result(sys::voicevox_synthesizer_tts(
                 self.inner,
                 text.as_ptr(),
+                style_id,
+                options.into(),
+                len_ptr.as_mut_ptr(),
+                wav_ptr.as_mut_ptr(),
+            ))?;
+            (wav_ptr.assume_init(), len_ptr.assume_init())
+        };
+
+        let result = unsafe { std::slice::from_raw_parts(wav, len).to_vec() };
+
+        unsafe {
+            sys::voicevox_wav_free(wav);
+        }
+
+        Ok(result)
+    }
+
+    /// AquesTalk風記法のカナから音声を合成する。
+    ///
+    /// # Arguments
+    /// * `kana` - AquesTalk風記法のカナ。
+    /// * `style_id` - 音声のスタイルID。
+    /// * `options` - 音声合成のオプション。
+    ///
+    /// # Returns
+    /// WAV形式の音声データ。
+    pub fn tts_from_kana(
+        &self,
+        kana: &str,
+        style_id: StyleId,
+        options: TtsOptions,
+    ) -> Result<Vec<u8>> {
+        let kana = CString::new(kana).unwrap();
+        let (wav, len) = unsafe {
+            let mut wav_ptr = MaybeUninit::uninit();
+            let mut len_ptr = MaybeUninit::uninit();
+            i32_to_result(sys::voicevox_synthesizer_tts_from_kana(
+                self.inner,
+                kana.as_ptr(),
                 style_id,
                 options.into(),
                 len_ptr.as_mut_ptr(),
