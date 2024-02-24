@@ -65,6 +65,12 @@ impl UserDict {
         Ok(Self { inner })
     }
 
+    /// ユーザー辞書をファイルから読み込む。
+    pub fn load(&self, path: &std::path::Path) -> Result<()> {
+        let path = CString::new(path.to_str().unwrap()).unwrap();
+        i32_to_result(unsafe { sys::voicevox_user_dict_load(self.inner, path.as_ptr()) })
+    }
+
     /// 他のユーザー辞書を読み込む。
     pub fn import(&self, other: &UserDict) -> Result<()> {
         i32_to_result(unsafe { sys::voicevox_user_dict_import(self.inner, other.inner) })
